@@ -116,10 +116,38 @@ join don_dat_hang ddh on pn.don_hang_id = ddh.id
 join ct_don_hang ctdh on  ddh.id = ctdh.don_hang_id
 join vat_tu vt on ctdh.vat_tu_id = vt.id;
 select * from vw_CTPNHAP_VT_PN ;
--- phieu nhap, ct don dat hang, vat tu, don dat hang
 
+-- Câu 4. Tạo view có tên vw_CTPNHAP_VT_PN_DH bao gồm các thông tin sau: 
+-- số phiếu nhập hàng, ngày nhập hàng, số đơn đặt hàng, mã nhà cung cấp, mã vật tư, tên vật tư, số lượng nhập, đơn giá nhập, thành tiền nhập.
+create view vw_CTPNHAP_VT_PN_DH  as
+select  pn.ma_phieu_nhap, pn.ngay_nhap, ddh.ma_don, ncc.ma_nha_cung_cap,
+vt.ma_vat_tu, vt.ten_vat_tu, ctpn.so_luong_nhap, ctpn.don_gia_nhap, (ctpn.so_luong_nhap*ctpn.don_gia_nhap) as thanh_tien_nhap
+from vat_tu vt join ct_phieu_nhap ctpn on vt.id = ctpn.vat_tu_id
+join phieu_nhap pn on ctpn.Phieu_nhap_id - pn.id
+join don_dat_hang ddh on pn.don_hang_id = ddh.id
+join nha_cung_cap ncc on ddh.nha_cung_cap_id = ncc.id;
+select * from vw_CTPNHAP_VT_PN_DH;
 
+-- Câu 5. Tạo view có tên vw_CTPNHAP_loc  bao gồm các thông tin sau: 
+-- số phiếu nhập hàng, mã vật tư, số lượng nhập, đơn giá nhập, thành tiền nhập. Và chỉ liệt kê các chi tiết nhập có số lượng nhập > 5.
+create view vw_CTPNHAP_loc  as
+select  pn.ma_phieu_nhap,vt.ma_vat_tu, ctpn.so_luong_nhap, ctpn.don_gia_nhap, (ctpn.so_luong_nhap*ctpn.don_gia_nhap) as thanh_tien_nhap
+from vat_tu vt join ct_phieu_nhap ctpn on vt.id = ctpn.vat_tu_id
+join phieu_nhap pn on ctpn.Phieu_nhap_id - pn.id
+where ctpn.so_luong_nhap > 5 ;
+select * from vw_CTPNHAP_loc;
+drop view vw_CTPNHAP_loc ;
 
+-- Câu 6. Tạo view có tên vw_CTPNHAP_VT_loc bao gồm các thông tin sau:
+-- số phiếu nhập hàng, mã vật tư, tên vật tư, số lượng nhập, đơn giá nhập, thành tiền nhập. Và chỉ liệt kê các chi tiết nhập vật tư có đơn vị tính là Bộ.
+create view vw_CTPNHAP_VT_loc  as
+select  pn.ma_phieu_nhap,vt.ma_vat_tu, vt.don_vi_tinh, ctpn.so_luong_nhap, ctpn.don_gia_nhap, (ctpn.so_luong_nhap*ctpn.don_gia_nhap) as thanh_tien_nhap
+from vat_tu vt join ct_phieu_nhap ctpn on vt.id = ctpn.vat_tu_id
+join phieu_nhap pn on ctpn.Phieu_nhap_id - pn.id
+ where vt.don_vi_tinh = 'hop'; 
+ -- thay don vi khac do luc nhap du lieu k co
+select * from vw_CTPNHAP_VT_loc;
+drop view vw_CTPNHAP_VT_loc ;
 
 
 
