@@ -102,10 +102,21 @@ join vat_tu vt on ctpn.vat_tu_id = vt.id;
 select * from vw_CTPNHAP;
 
 -- Câu 2. Tạo view có tên vw_CTPNHAP_VT bao gồm các thông tin sau: số phiếu nhập hàng, mã vật tư, tên vật tư, số lượng nhập, đơn giá nhập, thành tiền nhập
+create view vw_CTPNHAP_VT as
+select  pn.ma_phieu_nhap, vt.ma_vat_tu, vt.ten_vat_tu, ctpn.so_luong_nhap, ctpn.don_gia_nhap, (ctpn.so_luong_nhap*ctpn.don_gia_nhap) as thanh_tien_nhap
+from phieu_nhap pn join ct_phieu_nhap ctpn on pn.id = ctpn.phieu_nhap_id
+join vat_tu vt on ctpn.vat_tu_id = vt.id;
+select * from vw_CTPNHAP_VT;
 
-
-
-
+-- Câu 3. Tạo view có tên vw_CTPNHAP_VT_PN bao gồm các thông tin sau: số phiếu nhập hàng, ngày nhập hàng, số đơn đặt hàng, mã vật tư, tên vật tư, số lượng nhập, đơn giá nhập, thành tiền nhập.
+create view vw_CTPNHAP_VT_PN  as
+select  pn.ma_phieu_nhap, pn.ngay_nhap, ddh.ma_don, vt.ma_vat_tu, vt.ten_vat_tu, ctpn.so_luong_nhap, ctpn.don_gia_nhap, (ctpn.so_luong_nhap*ctpn.don_gia_nhap) as thanh_tien_nhap
+from ct_phieu_nhap ctpn join phieu_nhap pn on ctpn.phieu_nhap_id = pn.id
+join don_dat_hang ddh on pn.don_hang_id = ddh.id
+join ct_don_hang ctdh on  ddh.id = ctdh.don_hang_id
+join vat_tu vt on ctdh.vat_tu_id = vt.id;
+select * from vw_CTPNHAP_VT_PN ;
+-- phieu nhap, ct don dat hang, vat tu, don dat hang
 
 
 
